@@ -77,7 +77,27 @@ def process_table_input(rows, columns):
                 print("ERROR, value out of possible range: <0:" + str(max_value)+">")
             input_table[row][i] = value
 
+    # Used to check if the numbers are fine
+    validation_list = [False] * (rows * columns)
+
+    for row in range(0, rows):
+        for column in range(0, columns):
+            validation_list[input_table[row][column]] = True
+
+    for b in validation_list:
+        if not b:
+            print("ERROR, INCORRECT NUMBERS")
+
     return input_table
+
+
+def print_table(table):
+    print("Table:")
+    for row in table:
+        line = "";
+        for value in row:
+            line += str(value) +" "
+        print(line)
 
 
 def main(argv):
@@ -97,7 +117,7 @@ def main(argv):
     print("Hello there! This is puzzle solver")
     rows, columns = process_size_input()
     table = process_table_input(rows, columns)
-    print(table)
+    print_table(table)
 
     call_algorithm(method)
 
