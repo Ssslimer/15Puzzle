@@ -22,6 +22,15 @@ def determine_method():
     else:
         return -1
 
+def determine_if_order_correct(order):
+    if len(order) == 4:
+        if "L" in order and "R" in order and "U" in order and "D" in order:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 def call_algorithm(method):
     if method == 0:
         bfs()
@@ -35,15 +44,6 @@ def call_algorithm(method):
         a_star()
     elif method ==  5:
         sma_star()
-
-
-
-def main(argv):
-    method = determine_method()
-
-    if method == -1:
-        print("No algorithm was chosen, please try again")
-
 
 def process_size_input():
     print("Pass two integers denoting size of the puzzle table")
@@ -102,11 +102,18 @@ def print_table(table):
 
 def main(argv):
     method = determine_method()
+    order = sys.argv[2]
+    is_order_correct = determine_if_order_correct(order)
 
     if method == -1:
         print("No algorithm was chosen, please try again")
         return
 
+    if not is_order_correct:
+        print("Wrong order, please try again")
+        return
+
+    print(order + " order chosen")
     print("Hello there! This is puzzle solver")
     rows, columns = process_size_input()
     table = process_table_input(rows, columns)
@@ -116,7 +123,3 @@ def main(argv):
 
 
 main(sys.argv[1:])
-
-
-
-
