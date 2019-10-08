@@ -33,7 +33,7 @@ class Table(object):
     def print(self):
         print("Table:")
         for row in self.data:
-            line = "";
+            line = ""
             for value in row:
                 line += str(value) + " "
             print(line)

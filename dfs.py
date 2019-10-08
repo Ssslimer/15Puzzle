@@ -1,2 +1,2 @@
-def dfs(order):
+def dfs(order, table):
     print("Inside DFS algorithm")
