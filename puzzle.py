@@ -1,4 +1,5 @@
 import sys
+import random
 from bfs import bfs
 from dfs import dfs
 from idfs import idfs
@@ -22,6 +23,20 @@ def determine_method():
         return 5
     else:
         return -1
+
+
+def create_random_order():
+    order_options = ["L", "R", "D", "U"]
+    order = ""
+
+    for i in range(4):
+        while True:
+            option_index = random.randint(0, 3)
+            if order_options[option_index] not in order:
+                order += order_options[option_index]
+                break
+
+    return order
 
 
 def determine_if_order_correct(order):
@@ -107,7 +122,14 @@ def print_table(table):
 def main(argv):
     method = determine_method()
     order = sys.argv[2]
-    is_order_correct = determine_if_order_correct(order)
+    # is_order_correct
+
+    if order == "R":
+        order = create_random_order()
+        is_order_correct = True
+        print("Random order: " + order)
+    else:
+        is_order_correct = determine_if_order_correct(order)
 
     if method == -1:
         print("No algorithm was chosen, please try again")
