@@ -6,8 +6,7 @@ from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
 
-<<<<<<< HEAD
-=======
+
 def main(argv):
     if sys.argv[1] == "-b" or sys.argv[1] == "-bfs":
         print("BFS")
@@ -30,7 +29,6 @@ def main(argv):
     else:
         print("No algorithm was chosen, please try again")
 
->>>>>>> a3315112cfd6606bfa5cb81c1ecd583da9312088
 
 def process_size_input():
     print("Pass two integers denoting size of the puzzle table")
