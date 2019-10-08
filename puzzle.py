@@ -5,6 +5,8 @@ from idfs import idfs
 from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
+from table import Table
+
 
 def determine_method():
     if sys.argv[1] == "-b" or sys.argv[1] == "-bfs":
@@ -22,6 +24,7 @@ def determine_method():
     else:
         return -1
 
+
 def determine_if_order_correct(order):
     if len(order) == 4:
         if "L" in order and "R" in order and "U" in order and "D" in order:
@@ -30,6 +33,7 @@ def determine_if_order_correct(order):
             return False
     else:
         return False
+
 
 def call_algorithm(method):
     if method == 0:
@@ -44,6 +48,7 @@ def call_algorithm(method):
         a_star()
     elif method ==  5:
         sma_star()
+
 
 def process_size_input():
     print("Pass two integers denoting size of the puzzle table")
@@ -91,15 +96,6 @@ def process_table_input(rows, columns):
     return input_table
 
 
-def print_table(table):
-    print("Table:")
-    for row in table:
-        line = "";
-        for value in row:
-            line += str(value) +" "
-        print(line)
-
-
 def main(argv):
     method = determine_method()
     order = sys.argv[2]
@@ -116,8 +112,11 @@ def main(argv):
     print(order + " order chosen")
     print("Hello there! This is puzzle solver")
     rows, columns = process_size_input()
-    table = process_table_input(rows, columns)
-    print_table(table)
+    table = Table(process_table_input(rows, columns))
+    table.print()
+    table.is_solved()
+    tmp = table.count_correct_puzzles()
+    print(tmp)
 
     call_algorithm(method)
 
