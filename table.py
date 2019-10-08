@@ -1,3 +1,9 @@
+ORDER_LEFT = 0
+ORDER_RIGHT = 1
+ORDER_DOWN = 2
+ORDER_UP = 3
+
+
 class Table(object):
     def __init__(self, table):
         self.test = 0
@@ -37,3 +43,5 @@ class Table(object):
             for value in row:
                 line += str(value) + " "
             print(line)
+
+    def move_blank(self, blank_row, blank_column, offset_row, offset_column):
