@@ -6,6 +6,7 @@ from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
 
+
 def determine_method():
     if sys.argv[1] == "-b" or sys.argv[1] == "-bfs":
         return 0
@@ -22,6 +23,7 @@ def determine_method():
     else:
         return -1
 
+
 def determine_if_order_correct(order):
     if len(order) == 4:
         if "L" in order and "R" in order and "U" in order and "D" in order:
@@ -31,19 +33,21 @@ def determine_if_order_correct(order):
     else:
         return False
 
-def call_algorithm(method):
+
+def call_algorithm(method, order):
     if method == 0:
-        bfs()
+        bfs(order)
     elif method == 1:
-        dfs()
+        dfs(order)
     elif method == 2:
-        idfs()
+        idfs(order)
     elif method == 3:
-        best_first_search()
+        best_first_search(order)
     elif method == 4:
-        a_star()
+        a_star(order)
     elif method ==  5:
-        sma_star()
+        sma_star(order)
+
 
 def process_size_input():
     print("Pass two integers denoting size of the puzzle table")

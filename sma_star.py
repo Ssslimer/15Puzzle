@@ -1,2 +1,2 @@
-def sma_star():
+def sma_star(order):
     print("Inside SMA* algorithm")
