@@ -123,7 +123,7 @@ def main(argv):
     table = process_table_input(rows, columns)
     print_table(table)
 
-    call_algorithm(method)
+    call_algorithm(method, order)
 
 
 main(sys.argv[1:])
