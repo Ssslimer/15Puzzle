@@ -1,2 +1,2 @@
-def idfs():
+def idfs(order):
     print("Inside IDFS algorithm")

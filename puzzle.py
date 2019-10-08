@@ -1,4 +1,5 @@
 import sys
+import random
 from bfs import bfs
 from dfs import dfs
 from idfs import idfs
@@ -25,6 +26,20 @@ def determine_method():
         return -1
 
 
+def create_random_order():
+    order_options = ["L", "R", "D", "U"]
+    order = ""
+
+    for i in range(4):
+        while True:
+            option_index = random.randint(0, 3)
+            if order_options[option_index] not in order:
+                order += order_options[option_index]
+                break
+
+    return order
+
+
 def determine_if_order_correct(order):
     if len(order) == 4:
         if "L" in order and "R" in order and "U" in order and "D" in order:
@@ -35,19 +50,19 @@ def determine_if_order_correct(order):
         return False
 
 
-def call_algorithm(method):
+def call_algorithm(method, order):
     if method == 0:
-        bfs()
+        bfs(order)
     elif method == 1:
-        dfs()
+        dfs(order)
     elif method == 2:
-        idfs()
+        idfs(order)
     elif method == 3:
-        best_first_search()
+        best_first_search(order)
     elif method == 4:
-        a_star()
+        a_star(order)
     elif method ==  5:
-        sma_star()
+        sma_star(order)
 
 
 def process_size_input():
@@ -99,7 +114,14 @@ def process_table_input(rows, columns):
 def main(argv):
     method = determine_method()
     order = sys.argv[2]
-    is_order_correct = determine_if_order_correct(order)
+    # is_order_correct
+
+    if order == "R":
+        order = create_random_order()
+        is_order_correct = True
+        print("Random order: " + order)
+    else:
+        is_order_correct = determine_if_order_correct(order)
 
     if method == -1:
         print("No algorithm was chosen, please try again")
@@ -118,7 +140,7 @@ def main(argv):
     tmp = table.count_correct_puzzles()
     print(tmp)
 
-    call_algorithm(method)
+    call_algorithm(method, order)
 
 
 main(sys.argv[1:])

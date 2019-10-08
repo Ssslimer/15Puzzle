@@ -1,2 +1,2 @@
-def a_star():
+def a_star(order):
     print("Inside A* algorithm")
