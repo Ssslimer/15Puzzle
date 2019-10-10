@@ -1,2 +1,2 @@
-def bfs(order):
+def bfs(order, table):
     print("Inside BFS algorithm")

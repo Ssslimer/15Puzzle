@@ -50,19 +50,19 @@ def determine_if_order_correct(order):
         return False
 
 
-def call_algorithm(method, order):
+def call_algorithm(method, order, table):
     if method == 0:
-        bfs(order)
+        bfs(order, table)
     elif method == 1:
-        dfs(order)
+        dfs(order, table)
     elif method == 2:
-        idfs(order)
+        idfs(order, table)
     elif method == 3:
-        best_first_search(order)
+        best_first_search(order, table)
     elif method == 4:
-        a_star(order)
-    elif method ==  5:
-        sma_star(order)
+        a_star(order, table)
+    elif method == 5:
+        sma_star(order, table)
 
 
 def process_size_input():
@@ -140,7 +140,7 @@ def main(argv):
     tmp = table.count_correct_puzzles()
     print(tmp)
 
-    call_algorithm(method, order)
+    call_algorithm(method, order, table)
 
 
 main(sys.argv[1:])
