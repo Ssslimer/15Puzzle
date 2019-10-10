@@ -1,12 +1,13 @@
 import sys
 import random
+
 from bfs import bfs
 from dfs import dfs
 from idfs import idfs
 from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
-from table import Table
+from table import Table, ORDER_LEFT, ORDER_DOWN, ORDER_RIGHT, ORDER_UP
 
 
 def determine_method():
@@ -69,12 +70,12 @@ def process_size_input():
     print("Pass two integers denoting size of the puzzle table")
     line = input().split()
     if len(line) != 2:
-        print("ERROR, expected only 2 integers")
+        raise Exception("ERROR, expected only 2 integers")
 
     rows = int(line[0])
     columns = int(line[1])
     if rows <= 1 or columns <= 1:
-        print("ERROR, give only positive size for table and at least 2")
+        raise Exception("ERROR, give only positive size for table and at least 2")
 
     return rows, columns
 
@@ -90,11 +91,11 @@ def process_table_input(rows, columns):
         max_value = rows * columns - 1
 
         if len(elements) != columns:
-            print("ERROR, columns and input doesnt match")
+            raise Exception("ERROR, columns and input doesnt match")
         for i in range(0, len(elements)):
             value = int(elements[i])
             if value > max_value:
-                print("ERROR, value out of possible range: <0:" + str(max_value)+">")
+                raise Exception("ERROR, value out of possible range: <0:" + str(max_value)+">")
             input_table[row][i] = value
 
     # Used to check if the numbers are fine
@@ -106,7 +107,7 @@ def process_table_input(rows, columns):
 
     for b in validation_list:
         if not b:
-            print("ERROR, INCORRECT NUMBERS")
+            raise Exception("ERROR, INCORRECT NUMBERS")
 
     return input_table
 
@@ -124,12 +125,10 @@ def main(argv):
         is_order_correct = determine_if_order_correct(order)
 
     if method == -1:
-        print("No algorithm was chosen, please try again")
-        return
+        raise Exception("No algorithm was chosen, please try again")
 
     if not is_order_correct:
-        print("Wrong order, please try again")
-        return
+        raise Exception("Wrong order, please try again")
 
     print(order + " order chosen")
     print("Hello there! This is puzzle solver")
@@ -137,8 +136,9 @@ def main(argv):
     table = Table(process_table_input(rows, columns))
     table.print()
     table.is_solved()
-    tmp = table.count_correct_puzzles()
-    print(tmp)
+    table.move_blank(ORDER_LEFT)
+    print("MOVED BLANK")
+    table.print()
 
     call_algorithm(method, order, table)
 

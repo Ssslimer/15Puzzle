@@ -9,6 +9,16 @@ class Table(object):
         self.test = 0
         self.data = table
 
+        self.blank_row, self.blank_column = self.find_blank_tile_pos()
+
+    def find_blank_tile_pos(self):
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                if self.data[row][column] == 0:
+                    return row, column
+
+        return -1, -1
+
     def count_correct_puzzles(self):
         correct_puzzles = 0
 
@@ -44,9 +54,21 @@ class Table(object):
                 line += str(value) + " "
             print(line)
 
-    def move_blank(self, blank_row, blank_column, offset_row, offset_column):
-        new_blank_row = blank_row + offset_row
-        new_blank_column = blank_column + offset_column
+    def move_blank(self, direction):
+        if direction == ORDER_LEFT:
+            self.__move_blank(0, -1)
+        elif direction == ORDER_RIGHT:
+            self.__move_blank(0, 1)
+        elif direction == ORDER_UP:
+            self.__move_blank(-1, 0)
+        elif direction == ORDER_DOWN:
+            self.__move_blank(1, 0)
 
-        self.data[blank_row][blank_column] = self.data[new_blank_row][new_blank_column]
+    def __move_blank(self, offset_row, offset_column):
+        new_blank_row = self.blank_row + offset_row
+        new_blank_column = self.blank_column + offset_column
+
+        self.data[self.blank_row][self.blank_column] = self.data[new_blank_row][new_blank_column]
         self.data[new_blank_row][new_blank_column] = 0
+        self.blank_row = new_blank_row
+        self.blank_column = new_blank_column
