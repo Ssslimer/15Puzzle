@@ -45,3 +45,8 @@ class Table(object):
             print(line)
 
     def move_blank(self, blank_row, blank_column, offset_row, offset_column):
+        new_blank_row = blank_row + offset_row
+        new_blank_column = blank_column + offset_column
+
+        self.data[blank_row][blank_column] = self.data[new_blank_row][new_blank_column]
+        self.data[new_blank_row][new_blank_column] = 0
