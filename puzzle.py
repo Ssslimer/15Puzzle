@@ -7,7 +7,7 @@ from idfs import idfs
 from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
-from table import Table, ORDER_LEFT, ORDER_DOWN, ORDER_RIGHT, ORDER_UP
+from table import Table, order_from_char
 
 
 def determine_method():
@@ -25,20 +25,6 @@ def determine_method():
         return 5
     else:
         return -1
-
-
-def create_random_order():
-    order_options = ["L", "R", "D", "U"]
-    order = ""
-
-    for i in range(4):
-        while True:
-            option_index = random.randint(0, 3)
-            if order_options[option_index] not in order:
-                order += order_options[option_index]
-                break
-
-    return order
 
 
 def determine_if_order_correct(order):
@@ -107,7 +93,7 @@ def process_table_input(rows, columns):
 
     for b in validation_list:
         if not b:
-            raise Exception("ERROR, INCORRECT NUMBERS")
+            raise Exception("ERROR, INCORRECT NUMBERS", validation_list)
 
     return input_table
 
@@ -115,30 +101,23 @@ def process_table_input(rows, columns):
 def main(argv):
     method = determine_method()
     order = sys.argv[2]
-    # is_order_correct
-
-    if order == "R":
-        order = create_random_order()
-        is_order_correct = True
-        print("Random order: " + order)
-    else:
-        is_order_correct = determine_if_order_correct(order)
 
     if method == -1:
         raise Exception("No algorithm was chosen, please try again")
 
-    if not is_order_correct:
-        raise Exception("Wrong order, please try again")
+    if order == "R":
+        order = None
+    else:
+        if not determine_if_order_correct(order):
+            raise Exception("Wrong order, please try again")
+        else:
+            order = [order_from_char(order[0]), order_from_char(order[1]), order_from_char(order[2]), order_from_char(order[3])]
 
-    print(order + " order chosen")
     print("Hello there! This is puzzle solver")
     rows, columns = process_size_input()
     table = Table(process_table_input(rows, columns))
-    table.print()
-    table.is_solved()
-    table.move_blank(ORDER_LEFT)
-    print("MOVED BLANK")
-    table.print()
+
+    # Convert from single string to array of numbers corresponding to direction
 
     call_algorithm(method, order, table)
 

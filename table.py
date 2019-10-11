@@ -4,11 +4,20 @@ ORDER_DOWN = 2
 ORDER_UP = 3
 
 
+def order_from_char(char):
+    if char == "L" or char == "l":
+        return ORDER_LEFT
+    elif char == "R" or char == "r":
+        return ORDER_RIGHT
+    elif char == "U" or char == "u":
+        return ORDER_DOWN
+    elif char == "D" or char == "d":
+        return ORDER_UP
+
+
 class Table(object):
     def __init__(self, table):
-        self.test = 0
         self.data = table
-
         self.blank_row, self.blank_column = self.find_blank_tile_pos()
 
     def find_blank_tile_pos(self):
@@ -44,7 +53,9 @@ class Table(object):
                     true_value = row * len(self.data[row]) + column
                 current_value = self.data[row][column-1]
 
-                return true_value == current_value
+                if true_value != current_value:
+                    return False
+        return True
 
     def print(self):
         print("Table:")
@@ -63,6 +74,8 @@ class Table(object):
             self.__move_blank(-1, 0)
         elif direction == ORDER_DOWN:
             self.__move_blank(1, 0)
+        else:
+            raise Exception("Wrong direction", direction)
 
     def __move_blank(self, offset_row, offset_column):
         new_blank_row = self.blank_row + offset_row
@@ -72,3 +85,18 @@ class Table(object):
         self.data[new_blank_row][new_blank_column] = 0
         self.blank_row = new_blank_row
         self.blank_column = new_blank_column
+
+    def can_move(self, direction):
+        if direction == ORDER_LEFT:
+            if self.blank_column >= 1:
+                return True
+        elif direction == ORDER_RIGHT:
+            if self.blank_column < len(self.data[0])-1:
+                return True
+        elif direction == ORDER_UP:
+            if self.blank_row >= 1:
+                return True
+        elif direction == ORDER_DOWN:
+            if self.blank_row < len(self.data)-1:
+                return True
+        return False
