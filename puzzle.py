@@ -1,5 +1,4 @@
 import sys
-import random
 
 from bfs import bfs
 from dfs import dfs
@@ -7,45 +6,48 @@ from idfs import idfs
 from best_first_search import best_first_search
 from a_star import a_star
 from sma_star import sma_star
-from table import Table, order_from_char
-
+from table import Table
+from utils import order_from_char
 
 def determine_method():
-    if sys.argv[1] == "-b" or sys.argv[1] == "-bfs":
+    method_argument = sys.argv[1]
+    if method_argument == "-b" or method_argument == "-bfs":
         return 0
-    elif sys.argv[1] == "-d" or sys.argv[1] == "-dfs":
+    elif method_argument == "-d" or method_argument == "-dfs":
         return 1
-    elif sys.argv[1] == "-i" or sys.argv[1] == "-idfs":
+    elif method_argument == "-i" or method_argument == "-idfs":
         return 2
-    elif sys.argv[1] == "-h" or sys.argv[1] == "-bf":
+    elif method_argument == "-h" or method_argument == "-bf":
         return 3
-    elif sys.argv[1] == "-a" or sys.argv[1] == "-astar":
+    elif method_argument == "-a" or method_argument == "-astar":
         return 4
-    elif sys.argv[1] == "-s" or sys.argv[1] == "-sma":
+    elif method_argument == "-s" or method_argument == "-sma":
         return 5
-    else:
-        return -1
+    raise Exception("No such method implemented")
 
 
 def determine_if_order_correct(order):
-    if len(order) == 4:
-        if "L" in order and "R" in order and "U" in order and "D" in order:
-            return True
-        else:
-            return False
-    else:
+    if len(order) != 4:
         return False
+
+    return "L" in order and "R" in order and "U" in order and "D" in order
 
 
 def call_algorithm(method, order, table):
+    solved_table = [[-1 for row in range(len(table.data))] for column in range(len(table.data[0]))]
+    for row in range(len(table.data)):
+        for column in range(1, len(table.data[row])+1):
+            solved_table[row][column - 1] = row * len(table.data[row]) + column
+    solved_table[-1][-1] = 0
+
     if method == 0:
         bfs(order, table)
     elif method == 1:
-        dfs(order, table)
+        dfs(order, solved_table, table)
     elif method == 2:
         idfs(order, table)
     elif method == 3:
-        best_first_search(order, table)
+        best_first_search(solved_table, table, heuristics=1)
     elif method == 4:
         a_star(order, table)
     elif method == 5:
@@ -71,14 +73,14 @@ def process_table_input(rows, columns):
 
     input_table = [[0 for x in range(rows)] for y in range(columns)]
 
-    for row in range(0, rows):
+    for row in range(rows):
         raw_line = input()
         elements = raw_line.split()
         max_value = rows * columns - 1
 
         if len(elements) != columns:
             raise Exception("ERROR, columns and input doesnt match")
-        for i in range(0, len(elements)):
+        for i in range(len(elements)):
             value = int(elements[i])
             if value > max_value:
                 raise Exception("ERROR, value out of possible range: <0:" + str(max_value)+">")
@@ -87,8 +89,8 @@ def process_table_input(rows, columns):
     # Used to check if the numbers are fine
     validation_list = [False] * (rows * columns)
 
-    for row in range(0, rows):
-        for column in range(0, columns):
+    for row in range(rows):
+        for column in range(columns):
             validation_list[input_table[row][column]] = True
 
     for b in validation_list:

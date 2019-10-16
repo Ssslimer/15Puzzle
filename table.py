@@ -1,18 +1,4 @@
-ORDER_LEFT = 0
-ORDER_RIGHT = 1
-ORDER_DOWN = 2
-ORDER_UP = 3
-
-
-def order_from_char(char):
-    if char == "L" or char == "l":
-        return ORDER_LEFT
-    elif char == "R" or char == "r":
-        return ORDER_RIGHT
-    elif char == "U" or char == "u":
-        return ORDER_DOWN
-    elif char == "D" or char == "d":
-        return ORDER_UP
+from utils import ORDER_UP, ORDER_DOWN, ORDER_RIGHT, ORDER_LEFT
 
 
 class Table(object):
@@ -28,32 +14,20 @@ class Table(object):
 
         return -1, -1
 
-    def count_correct_puzzles(self):
-        correct_puzzles = 0
+    def count_wrong_puzzles(self, proper_table):
+        counter = 0
 
-        for row in range(0, len(self.data)):
+        for row in range(len(self.data)):
             for column in range(1, len(self.data[row])+1):
-                if row == len(self.data)-1 and column == len(self.data[row]):
-                    true_value = 0
-                else:
-                    true_value = row * len(self.data[row]) + column
-                current_value = self.data[row][column-1]
+                if self.data[row][column-1] != proper_table[row][column-1]:
+                    counter += 1
 
-                if current_value == true_value:
-                    correct_puzzles += 1
+        return counter
 
-        return correct_puzzles
-
-    def is_solved(self):
-        for row in range(0, len(self.data)):
-            for column in range(1, len(self.data[row])+1):
-                if row == len(self.data)-1 and column == len(self.data[row]):
-                    true_value = 0
-                else:
-                    true_value = row * len(self.data[row]) + column
-                current_value = self.data[row][column-1]
-
-                if true_value != current_value:
+    def is_solved(self, solved_table):
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                if self.data[row][column] != solved_table[row][column]:
                     return False
         return True
 
@@ -88,15 +62,23 @@ class Table(object):
 
     def can_move(self, direction):
         if direction == ORDER_LEFT:
-            if self.blank_column >= 1:
-                return True
+            return self.blank_column >= 1
         elif direction == ORDER_RIGHT:
-            if self.blank_column < len(self.data[0])-1:
-                return True
+            return self.blank_column < len(self.data[0])-1
         elif direction == ORDER_UP:
-            if self.blank_row >= 1:
-                return True
+            return self.blank_row >= 1
         elif direction == ORDER_DOWN:
-            if self.blank_row < len(self.data)-1:
-                return True
-        return False
+            return self.blank_row < len(self.data)-1
+
+    def find_value(self, value):
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                if self.data[row][column] == value:
+                    return row, column
+
+    def __eq__(self, table):
+        for row in range(len(self.data)):
+            for column in range(len(self.data[row])):
+                if self.data[row][column] != table.data[row][column]:
+                    return False
+        return True

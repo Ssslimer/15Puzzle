@@ -14,24 +14,8 @@ class Node(object):
         current_node = self.parent
 
         while True:
-            if self.is_table_the_same(current_node):
+            if self == current_node:
                 return True
             if current_node.parent is None:
                 return False
             current_node = current_node.parent
-
-    def is_table_the_same(self, node):
-        if self.table.blank_column != node.table.blank_column or self.table.blank_row != node.table.blank_row:
-            return False
-
-        for row in range(len(self.table.data)):
-            for column in range(len(self.table.data[row])):
-                if self.table.data[row][column] != node.table.data[row][column]:
-                    return False
-        return True
-
-
-class Tree(object):
-    def __init__(self, root_table):
-        self.root = Node(root_table)
-

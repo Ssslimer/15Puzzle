@@ -1,63 +1,52 @@
+from typing import List
+
 from game_tree import Node
 import copy
-import game_tree
 from random import shuffle
 import table
+import utils
 
 
-def dfs(orders, table):
+def dfs(orders, solved_table, begin_table):
     # Depth-first search
     print("Inside DFS algorithm")
-    tree = game_tree.Tree(table)
 
-    random_orders = orders is None
-    final_node = search_in_children(orders, tree, random_orders)
-    moves = list()
+    final_node = search(begin_table, solved_table, orders, random_orders=orders is None)
+    print("FOUND SOLUTION")
 
-    current_node = final_node
-    while True:
-        moves.append(current_node.direction)
-        if current_node.parent is None:
-            break
-        current_node = current_node.parent
-
-    moves.reverse()
-    print(convert_moves(moves))
+    moves = utils.create_list_of_moves(final_node)
+    print(utils.convert_moves(moves))
 
 
-def convert_moves(moves_as_ints):
-    moves = list()
-    for move in moves_as_ints:
-        if move == 0:
-            moves.append("L")
-        elif move == 1:
-            moves.append("R")
-        elif move == 2:
-            moves.append("D")
-        elif move == 3:
-            moves.append("U")
-    return moves
+def search(begin_table, solved_table, orders, random_orders=False):
+    nodes_to_check = [Node(begin_table)]
 
-
-def search_in_children(orders, tree, random_orders=False):
-    nodes_to_check = [tree.root]
+    # 3D list, we use blank cords to speed up checking
+    processed_nodes: List[List[List[Node]]] = [[list() for row in range(len(begin_table.data))] for column in range(len(begin_table.data[0]))]
 
     if random_orders:
         orders = [table.ORDER_LEFT, table.ORDER_RIGHT, table.ORDER_DOWN, table.ORDER_UP]
         shuffle(orders)
 
+    count_checked_nodes = 0
     while len(nodes_to_check) != 0:
-        current_node = nodes_to_check.pop()
+        if count_checked_nodes % 1000 == 0:
+            print(str(len(nodes_to_check))+" "+str(count_checked_nodes))
+        count_checked_nodes += 1
 
-        if current_node.table.is_solved():
-            print("FOUND SOLUTION")
-            current_node.table.print()
+        current_node = nodes_to_check.pop()
+        processed_nodes[current_node.table.blank_row][current_node.table.blank_column].append(current_node)
+
+        if current_node.table.is_solved(solved_table):
             return current_node
 
         if random_orders:
             shuffle(orders)
 
-        for direction in orders: # TODO add in reversed order
+        # Add child nodes to search stack, we want the child with 'first' order on top of the stack, so children
+        # should be added in reversed order
+        for i in range(len(orders)-1, -1, -1):
+            direction = orders[i]
             child_node = Node(copy.deepcopy(current_node.table), current_node, direction)
 
             if not child_node.table.can_move(direction):
@@ -65,9 +54,18 @@ def search_in_children(orders, tree, random_orders=False):
 
             child_node.table.move_blank(direction)
 
-            # To prevent from infinite loop we check if the node table is the same as in any of its parents from hierarchy
-            if not random_orders and child_node.has_repeated():
-                continue
+            if can_node_be_added(child_node, nodes_to_check, processed_nodes):
+                nodes_to_check.append(child_node)
+    raise Exception("SOLUTION NOT FOUND!!")
 
-            print(child_node.depth)
-            nodes_to_check.append(child_node)
+
+def can_node_be_added(node, nodes_to_check, processed_nodes):
+    for n in nodes_to_check:
+        if n.table == node.table:
+            return False
+
+    for n in processed_nodes[node.table.blank_row][node.table.blank_column]:
+        if n.table == node.table:
+            return False
+
+    return True
