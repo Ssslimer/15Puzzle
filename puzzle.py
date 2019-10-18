@@ -9,6 +9,7 @@ from sma_star import sma_star
 from table import Table
 from utils import order_from_char
 
+
 def determine_method():
     method_argument = sys.argv[1]
     if method_argument == "-b" or method_argument == "-bfs":
@@ -47,9 +48,9 @@ def call_algorithm(method, order, table):
     elif method == 2:
         idfs(order, table)
     elif method == 3:
-        best_first_search(solved_table, table, heuristics=1)
+        best_first_search(Table(solved_table), table, heuristics=0)
     elif method == 4:
-        a_star(order, table)
+        a_star(Table(solved_table), table, heuristics=0)
     elif method == 5:
         sma_star(order, table)
 

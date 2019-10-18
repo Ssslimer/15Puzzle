@@ -27,9 +27,9 @@ def create_list_of_moves(final_node):
     moves = list()
     current_node = final_node
     while True:
-        moves.append(current_node.direction)
         if current_node.parent is None:
             break
+        moves.append(current_node.direction)
         current_node = current_node.parent
 
     moves.reverse()

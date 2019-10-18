@@ -19,7 +19,7 @@ class Table(object):
 
         for row in range(len(self.data)):
             for column in range(1, len(self.data[row])+1):
-                if self.data[row][column-1] != proper_table[row][column-1]:
+                if self.data[row][column-1] != proper_table.data[row][column-1]:
                     counter += 1
 
         return counter
@@ -27,7 +27,7 @@ class Table(object):
     def is_solved(self, solved_table):
         for row in range(len(self.data)):
             for column in range(len(self.data[row])):
-                if self.data[row][column] != solved_table[row][column]:
+                if self.data[row][column] != solved_table.data[row][column]:
                     return False
         return True
 

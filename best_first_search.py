@@ -17,11 +17,11 @@ def best_first_search(solved_table, begin_table, heuristics):
     print("PATH LENGTH: " + str(len(moves)))
 
 
-def search(proper_table, begin_table, heuristics):
+def search(solved_table, begin_table, heuristics):
     nodes_to_check = [[Node(begin_table), 0]]
 
     # 3D list, we use blank cords to speed up checking
-    processed_nodes: List[List[List[Node]]] = [[list() for row in range(len(proper_table))] for column in range(len(proper_table[0]))]
+    processed_nodes: List[List[List[Node]]] = [[list() for row in range(len(solved_table.data))] for column in range(len(solved_table.data[0]))]
 
     count_checked_nodes = 0
     while len(nodes_to_check) != 0:
@@ -30,7 +30,7 @@ def search(proper_table, begin_table, heuristics):
 
         count_checked_nodes += 1
 
-        if current_node.table.is_solved(proper_table):
+        if current_node.table.is_solved(solved_table):
             return current_node
 
         for direction in range(4):
@@ -40,7 +40,7 @@ def search(proper_table, begin_table, heuristics):
                 continue
 
             child_node.table.move_blank(direction)
-            value = evaluate(proper_table, child_node, heuristics)
+            value = evaluate(solved_table, child_node, heuristics)
             if count_checked_nodes % 100 == 0:
                 print(str(child_node.depth) + " " + str(len(nodes_to_check)) + " " + str(value) + " checked_nodes=" + str(count_checked_nodes))
 
