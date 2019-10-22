@@ -2,9 +2,11 @@ from utils import ORDER_UP, ORDER_DOWN, ORDER_RIGHT, ORDER_LEFT
 
 
 class Table(object):
-    def __init__(self, table):
-        self.data = table
+    def __init__(self, data):
+        self.data = tuple(tuple(item) for item in data)
+
         self.blank_row, self.blank_column = self.find_blank_tile_pos()
+        self.hash_value = hash(self.data)
 
     def find_blank_tile_pos(self):
         for row in range(len(self.data)):
@@ -41,24 +43,15 @@ class Table(object):
 
     def move_blank(self, direction):
         if direction == ORDER_LEFT:
-            self.__move_blank(0, -1)
+            return self.__move_blank(0, -1)
         elif direction == ORDER_RIGHT:
-            self.__move_blank(0, 1)
+            return self.__move_blank(0, 1)
         elif direction == ORDER_UP:
-            self.__move_blank(-1, 0)
+            return self.__move_blank(-1, 0)
         elif direction == ORDER_DOWN:
-            self.__move_blank(1, 0)
+            return self.__move_blank(1, 0)
         else:
             raise Exception("Wrong direction", direction)
-
-    def __move_blank(self, offset_row, offset_column):
-        new_blank_row = self.blank_row + offset_row
-        new_blank_column = self.blank_column + offset_column
-
-        self.data[self.blank_row][self.blank_column] = self.data[new_blank_row][new_blank_column]
-        self.data[new_blank_row][new_blank_column] = 0
-        self.blank_row = new_blank_row
-        self.blank_column = new_blank_column
 
     def can_move(self, direction):
         if direction == ORDER_LEFT:
@@ -77,8 +70,13 @@ class Table(object):
                     return row, column
 
     def __eq__(self, table):
-        for row in range(len(self.data)):
-            for column in range(len(self.data[row])):
-                if self.data[row][column] != table.data[row][column]:
-                    return False
-        return True
+        return table.hash_value == self.hash_value
+
+    def __move_blank(self, offset_row, offset_column):
+        new_data = list(list(item) for item in self.data)
+        new_blank_row = self.blank_row + offset_row
+        new_blank_column = self.blank_column + offset_column
+
+        new_data[self.blank_row][self.blank_column] = new_data[new_blank_row][new_blank_column]
+        new_data[new_blank_row][new_blank_column] = 0
+        return Table(new_data)

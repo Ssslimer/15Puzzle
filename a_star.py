@@ -1,13 +1,12 @@
-import copy
-
 import utils
 from game_tree import Node
+import time
 
 
 def a_star(solved_table, begin_table, heuristics):
     print("Inside A* algorithm")
 
-    final_node = search(solved_table, begin_table, heuristics)
+    final_node = search_hash(solved_table, begin_table, heuristics)
     final_node.table.print()
     print("FOUND SOLUTION")
 
@@ -16,12 +15,57 @@ def a_star(solved_table, begin_table, heuristics):
     print("PATH LENGTH: " + str(len(moves)))
 
 
+def search_hash(solved_table, begin_table, heuristics):
+    nodes_to_check = [[Node(begin_table), 0]]  # Node, f(n)
+    if begin_table == solved_table:
+        return nodes_to_check[0][0]
+
+    stats = list()
+    start_time = time.time()
+    processed_nodes = dict()  # key=puzzle table hash, value=Node
+
+    count_checked_nodes = 0
+    while len(nodes_to_check) != 0:
+        best_entry = nodes_to_check.pop()
+        current_node = best_entry[0]
+
+        count_checked_nodes += 1
+
+        if count_checked_nodes % 100 == 0:
+            stats.put([count_checked_nodes, time.time() - start_time])
+            print("CHECKED: " + str(count_checked_nodes))
+            print(str(best_entry[1])+" "+str(best_entry[0].depth))
+
+        if current_node.table.is_solved(solved_table):
+            print("FOUND")
+            return current_node
+
+        for direction in range(4):
+            if not current_node.table.can_move(direction):
+                continue
+
+            child_table = current_node.table.move_blank(direction)
+            child_node = Node(child_table, current_node, direction)
+
+            value = evaluate(solved_table, child_node, heuristics)
+            same_table_open_node = find_same_table_node(nodes_to_check, child_node.table)
+
+            if same_table_open_node is not None and child_node.depth > same_table_open_node[0].depth:
+                continue
+
+            if child_node.table.hash_value in processed_nodes and child_node.depth > processed_nodes[child_node.table.hash_value].depth:
+                continue
+            else:
+                add_to_descending_list(child_node, value, nodes_to_check)
+        processed_nodes[current_node.table.hash_value] = current_node
+    raise Exception("Could not find solution")
+
+
 def search(solved_table, begin_table, heuristics):
     nodes_to_check = [[Node(begin_table), 0]]  # Node, f(n)
     if begin_table == solved_table:
         return nodes_to_check[0][0]
 
-    # 3D list, we use blank cords to speed up checking
     processed_nodes = list()  # Node, f(n)
 
     count_checked_nodes = 0
@@ -42,16 +86,16 @@ def search(solved_table, begin_table, heuristics):
             return current_node
 
         for direction in range(4):
-            child_node = Node(copy.deepcopy(current_node.table), current_node, direction)
-
-            if not child_node.table.can_move(direction):
+            if not current_node.table.can_move(direction):
                 continue
 
-            child_node.table.move_blank(direction)
+            child_table = current_node.table.move_blank(direction)
+            child_node = Node(child_table, current_node, direction)
 
             value = evaluate(solved_table, child_node, heuristics)
             same_table_open_node = find_same_table_node(nodes_to_check, child_node.table)
             same_table_closed_node = find_same_table_node(processed_nodes, child_node.table)
+
             if same_table_open_node is not None and child_node.depth > same_table_open_node[0].depth:
                 continue
 

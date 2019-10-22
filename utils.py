@@ -1,3 +1,5 @@
+from math import floor
+
 ORDER_LEFT = 0
 ORDER_RIGHT = 1
 ORDER_DOWN = 2
@@ -34,3 +36,27 @@ def create_list_of_moves(final_node):
 
     moves.reverse()
     return moves
+
+
+def binary_search(arr, value):
+    n = len(arr)
+    L = 0
+    R = n - 1
+
+    while L <= R:
+        mid = floor((L + R) / 2)
+        if arr[mid] < value:
+            L = mid + 1
+        elif arr[mid] > value:
+            R = mid - 1
+        else:
+            return mid
+    return -1
+
+
+def add_to_ascending_list(asc_list, value):
+    for i in range(len(asc_list)):
+        if value < asc_list[i]:
+            asc_list.insert(i, value)
+            return
+    asc_list.append(value)
