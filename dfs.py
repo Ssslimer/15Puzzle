@@ -19,9 +19,7 @@ def dfs(orders, solved_table, begin_table):
 
 def search(begin_table, solved_table, orders, random_orders=False):
     nodes_to_check = [Node(begin_table)]
-
-    # List of hashes
-    processed_nodes = list()
+    processed_nodes = list()  # List of hashes
 
     if random_orders:
         orders = [table.ORDER_LEFT, table.ORDER_RIGHT, table.ORDER_DOWN, table.ORDER_UP]
@@ -31,7 +29,7 @@ def search(begin_table, solved_table, orders, random_orders=False):
     while len(nodes_to_check) != 0:
         counter += 1
         if counter % 1000 == 0:
-            print(str(len(nodes_to_check))+" "+str(len(processed_nodes)))
+            print(str(len(nodes_to_check))+" "+str(counter))
 
         current_node = nodes_to_check.pop()
         utils.add_to_ascending_list(processed_nodes, current_node.table.hash_value)

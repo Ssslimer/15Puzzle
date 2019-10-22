@@ -48,9 +48,9 @@ def call_algorithm(method, order, table):
     elif method == 2:
         idfs(order, table)
     elif method == 3:
-        best_first_search(Table(solved_table), table, heuristics=0)
+        best_first_search(Table(solved_table), table, heuristics=2)
     elif method == 4:
-        a_star(Table(solved_table), table, heuristics=0)
+        a_star(Table(solved_table), table, heuristics=2)
     elif method == 5:
         sma_star(order, table)
 

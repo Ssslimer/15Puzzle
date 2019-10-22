@@ -17,15 +17,13 @@ def best_first_search(solved_table, begin_table, heuristics):
 
 def search(solved_table, begin_table, heuristics):
     nodes_to_check = [[Node(begin_table), 0]]
-
-    # List of hashes
-    processed_nodes = list()
+    processed_nodes = list()  # List of hashes
 
     counter = 0
     while len(nodes_to_check) != 0:
         counter += 1
-        if counter % 100 == 0:
-            print(str(child_node.depth) + " " + str(len(nodes_to_check)) + " " + str(value) + " checked_nodes=" + str(counter))
+        if counter % 1000 == 0:
+            print(str(len(nodes_to_check))+" "+str(counter))
 
         current_node = nodes_to_check.pop()[0]
         utils.add_to_ascending_list(processed_nodes, current_node.table.hash_value)
@@ -66,27 +64,29 @@ def can_node_be_added(node, nodes_to_check, processed_nodes):
     return True
 
 
-def evaluate(proper_table, node, heuristics):
+def evaluate(solved_table, node, heuristics):
     if heuristics == 0:
-        value = node.table.count_wrong_puzzles(proper_table)
+        value = node.table.count_wrong_puzzles(solved_table)
         return value
     elif heuristics == 1:
         manhattan_distance_sum = 0
 
-        for row in range(len(proper_table)):
-            for column in range(len(proper_table[row])):
-                value = proper_table[row][column]
+        for row in range(len(solved_table.data)):
+            for column in range(len(solved_table.data[row])):
+                value = solved_table.data[row][column]
                 actual_row, actual_column = node.table.find_value(value)
                 manhattan_distance_sum += abs(actual_row - row) + abs(actual_column - column)
 
         return manhattan_distance_sum
     elif heuristics == 2:
-        error_sum = 0
+        cartesian_distance_sum = 0
 
-        for row in range(len(proper_table)):
-            for column in range(len(proper_table[row])):
-                proper_value = proper_table[row][column]
-                value = node.table.data[row][column]
-                error_sum += abs(proper_value - value)
+        for row in range(len(solved_table.data)):
+            for column in range(len(solved_table.data[row])):
+                value = solved_table.data[row][column]
+                actual_row, actual_column = node.table.find_value(value)
+                delta_row = actual_row - row
+                delta_column = actual_column - column
+                cartesian_distance_sum += pow(delta_row*delta_row + delta_column*delta_column, 0.5)
 
-        return error_sum
+        return cartesian_distance_sum
