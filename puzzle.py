@@ -42,7 +42,7 @@ def call_algorithm(method, order, table):
     solved_table[-1][-1] = 0
 
     if method == 0:
-        bfs(order, table)
+        bfs(order, Table(solved_table), table)
     elif method == 1:
         dfs(order, solved_table, table)
     elif method == 2:
