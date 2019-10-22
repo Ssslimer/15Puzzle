@@ -44,7 +44,7 @@ def call_algorithm(method, order, table):
     if method == 0:
         bfs(order, Table(solved_table), table)
     elif method == 1:
-        dfs(order, solved_table, table)
+        dfs(order, Table(solved_table), table)
     elif method == 2:
         idfs(order, table)
     elif method == 3:

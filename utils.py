@@ -54,9 +54,28 @@ def binary_search(arr, value):
     return -1
 
 
-def add_to_ascending_list(asc_list, value):
-    for i in range(len(asc_list)):
-        if value < asc_list[i]:
-            asc_list.insert(i, value)
-            return
-    asc_list.append(value)
+def add_to_ascending_list(arr, value):
+    if len(arr) == 0 or value >= arr[-1]:
+        arr.append(value)
+        return
+
+    if value <= arr[0]:
+        arr.insert(0, value)
+        return
+
+    left_pointer = 0
+    right_pointer = len(arr) - 1
+
+    while left_pointer <= right_pointer:
+        mid = floor((left_pointer + right_pointer) / 2)
+        if arr[mid] < value:
+            left_pointer = mid + 1
+        elif arr[mid] > value:
+            right_pointer = mid - 1
+        else:
+            arr.insert(mid, value)
+
+    if left_pointer > right_pointer:
+        arr.insert(left_pointer, value)
+    else:
+        arr.insert(right_pointer, value)

@@ -1,6 +1,5 @@
 import utils
 from game_tree import Node
-import time
 
 
 def a_star(solved_table, begin_table, heuristics):
@@ -20,8 +19,6 @@ def search_hash(solved_table, begin_table, heuristics):
     if begin_table == solved_table:
         return nodes_to_check[0][0]
 
-    stats = list()
-    start_time = time.time()
     processed_nodes = dict()  # key=puzzle table hash, value=Node
 
     count_checked_nodes = 0
@@ -32,7 +29,6 @@ def search_hash(solved_table, begin_table, heuristics):
         count_checked_nodes += 1
 
         if count_checked_nodes % 100 == 0:
-            stats.put([count_checked_nodes, time.time() - start_time])
             print("CHECKED: " + str(count_checked_nodes))
             print(str(best_entry[1])+" "+str(best_entry[0].depth))
 
