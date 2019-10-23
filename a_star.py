@@ -1,11 +1,12 @@
 import utils
-from game_tree import Node
+from node import Node
 import time
 
 
 def a_star(solved_table, begin_table, heuristics):
     time_before = time.time()
 
+    heuristics = 2
     final_node = search(solved_table, begin_table, heuristics)
     final_node.table.print()
     print("Solution found in " + str(time.time() - time_before) + 's')
@@ -38,7 +39,8 @@ def search_hash(solved_table, begin_table, heuristics):
             child_table = current_node.table.move_blank(direction)
             child_node = Node(child_table, current_node, direction)
 
-            value = evaluate(solved_table, child_node, heuristics)
+            h = calculate_h(solved_table, child_node, heuristics)
+            f = h + child_node.depth
             same_table_open_node = find_same_table_node(nodes_to_check, child_node.table)
 
             if same_table_open_node is not None and child_node.depth > same_table_open_node[0].depth:
@@ -47,7 +49,7 @@ def search_hash(solved_table, begin_table, heuristics):
             if child_node.table.hash_value in processed_nodes and child_node.depth > processed_nodes[child_node.table.hash_value].depth:
                 continue
             else:
-                add_to_descending_list(child_node, value, nodes_to_check)
+                add_to_descending_list(child_node, f, nodes_to_check)
         processed_nodes[current_node.table.hash_value] = current_node
     raise Exception("Could not find solution")
 
@@ -59,11 +61,11 @@ def search(solved_table, begin_table, heuristics):
     counter = 0
     while len(nodes_to_check) != 0:
         counter += 1
-        if counter % 1000 == 0:
-            print(str(len(nodes_to_check))+" "+str(counter))
+       # if counter % 1 == 0:
+            #print(str(len(nodes_to_check))+" "+str(counter)+" "+str(nodes_to_check[-1][1]))
 
-        best_entry = nodes_to_check.pop()
-        current_node = best_entry[0]
+        current_node, current_f = nodes_to_check.pop()
+        current_node.table.print()
 
         if current_node.table.is_solved(solved_table):
             return current_node
@@ -72,24 +74,30 @@ def search(solved_table, begin_table, heuristics):
             if not current_node.table.can_move(direction):
                 continue
 
-            child_table = current_node.table.move_blank(direction)
-            child_node = Node(child_table, current_node, direction)
+            child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
-            value = evaluate(solved_table, child_node, heuristics)
+            h = calculate_h(solved_table, child_node, heuristics)
+            g = calculate_g(child_node)
+            f = h + g
+
             same_table_open_node = find_same_table_node(nodes_to_check, child_node.table)
             same_table_closed_node = find_same_table_node(processed_nodes, child_node.table)
 
-            # Do not choose this way! The node was visited and the route is longer than the previous
-            if same_table_closed_node is not None and child_node.depth >= same_table_closed_node[0].depth:
+            # Node has been visited but the new road is worse so skip this road
+            if same_table_closed_node is not None and g >= same_table_closed_node[0].depth:
                 continue
 
-            if same_table_open_node is not None and child_node.depth >= same_table_open_node[0].depth:
-                continue
+            # Its is better to move to the Node with the new route
+            if same_table_open_node is not None:
+                if g < same_table_open_node[0].depth:
+                    print("TEST")
+                    print(nodes_to_check)
+                    remove_from_descending_list(same_table_open_node[1], nodes_to_check)
+                    print(nodes_to_check)
+                    add_to_descending_list(child_node, f, nodes_to_check)
             else:
-                if same_table_open_node is not None:
-                    nodes_to_check.remove(same_table_open_node)
-                add_to_descending_list(child_node, value, nodes_to_check)
-        add_to_descending_list(current_node, best_entry[1], processed_nodes)
+                add_to_descending_list(child_node, f, nodes_to_check)
+        add_to_descending_list(current_node, current_f, processed_nodes)
     raise Exception("Could not find solution")
 
 
@@ -108,6 +116,13 @@ def add_to_descending_list(node, value, descending_list):
     descending_list.append([node, value])
 
 
+def remove_from_descending_list(value, descending_list):
+    for i in range(len(descending_list)):
+        if value == descending_list[i][1]:
+            del descending_list[i]
+            return
+
+
 def can_node_be_added(node, nodes_to_check, processed_nodes):
     for n in nodes_to_check:
         if n[0].table.hash_value == node.table.hash_value:
@@ -120,7 +135,11 @@ def can_node_be_added(node, nodes_to_check, processed_nodes):
     return True
 
 
-def evaluate(solved_table, node, heuristics):
+def calculate_g(node):
+    return node.depth
+
+
+def calculate_h(solved_table, node, heuristics):
     if heuristics == 0:
         value = node.table.count_wrong_puzzles(solved_table)
         return value

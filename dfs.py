@@ -1,4 +1,4 @@
-from game_tree import Node
+from node import Node
 from random import shuffle
 import table
 import utils
@@ -19,7 +19,7 @@ def dfs(orders, solved_table, begin_table):
 
 def search(begin_table, solved_table, orders, random_orders=False):
     nodes_to_check = [Node(begin_table)]
-    processed_nodes = list()  # List of hashes
+    processed_nodes = list()
 
     if random_orders:
         orders = [table.ORDER_LEFT, table.ORDER_RIGHT, table.ORDER_DOWN, table.ORDER_UP]
@@ -47,8 +47,7 @@ def search(begin_table, solved_table, orders, random_orders=False):
             if not current_node.table.can_move(direction):
                 continue
 
-            child_table = current_node.table.move_blank(direction)
-            child_node = Node(child_table, current_node, direction)
+            child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
             if can_node_be_added(child_node, nodes_to_check, processed_nodes):
                 nodes_to_check.append(child_node)
@@ -56,16 +55,16 @@ def search(begin_table, solved_table, orders, random_orders=False):
 
 
 def can_node_be_added(node, nodes_to_check, processed_nodes):
-    max_depth = 1000
+    max_depth = 300
 
     if node.depth > max_depth:
+        return False
+
+    if utils.binary_search(processed_nodes, node.table.hash_value) != -1:
         return False
 
     for n in nodes_to_check:
         if n.table.hash_value == node.table.hash_value:
             return False
-
-    if utils.binary_search(processed_nodes, node.table.hash_value) != -1:
-        return False
 
     return True

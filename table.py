@@ -27,11 +27,7 @@ class Table(object):
         return counter
 
     def is_solved(self, solved_table):
-        for row in range(len(self.data)):
-            for column in range(len(self.data[row])):
-                if self.data[row][column] != solved_table.data[row][column]:
-                    return False
-        return True
+        return self.hash_value == solved_table.hash_value
 
     def print(self):
         print("Table:")

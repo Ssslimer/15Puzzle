@@ -1,4 +1,4 @@
-from game_tree import Node
+from node import Node
 import utils
 import time
 
@@ -17,7 +17,7 @@ def best_first_search(solved_table, begin_table, heuristics):
 
 def search(solved_table, begin_table, heuristics):
     nodes_to_check = [[Node(begin_table), 0]]
-    processed_nodes = list()  # List of hashes
+    processed_nodes = list()
 
     counter = 0
     while len(nodes_to_check) != 0:
@@ -35,8 +35,7 @@ def search(solved_table, begin_table, heuristics):
             if not current_node.table.can_move(direction):
                 continue
 
-            child_table = current_node.table.move_blank(direction)
-            child_node = Node(child_table, current_node, direction)
+            child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
             value = evaluate(solved_table, child_node, heuristics)
 
@@ -54,12 +53,12 @@ def add_to_descending_list(node, value, descending_list):
 
 
 def can_node_be_added(node, nodes_to_check, processed_nodes):
+    if utils.binary_search(processed_nodes, node.table.hash_value) != -1:
+        return False
+
     for n in nodes_to_check:
         if n[0].table.hash_value == node.table.hash_value:
             return False
-
-    if utils.binary_search(processed_nodes, node.table.hash_value) != -1:
-        return False
 
     return True
 
