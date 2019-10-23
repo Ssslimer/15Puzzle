@@ -29,7 +29,6 @@ def search(begin_table, solved_table, order, random_orders=False):
     count_checked_nodes = 0
 
     while True:
-        # if count_checked_nodes % 20 == 0:
         print(str(len(nodes_to_check)) + " " + str(count_checked_nodes))
         count_checked_nodes += len(nodes_to_check)
 
