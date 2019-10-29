@@ -51,7 +51,7 @@ def search(begin_table, solved_table, orders, max_depth, random_orders=False):
 
             if can_node_be_added(child_node, nodes_to_check, processed_nodes, max_depth):
                 nodes_to_check.append(child_node)
-    raise Exception("SOLUTION NOT FOUND!!")
+    return None
 
 
 def can_node_be_added(node, nodes_to_check, processed_nodes, max_depth):
