@@ -5,10 +5,10 @@ import utils
 import time
 
 
-def dfs(orders, solved_table, begin_table):
+def dfs(orders, solved_table, begin_table, max_depth):
     time_before = time.time()
 
-    final_node = search(begin_table, solved_table, orders, random_orders=orders is None)
+    final_node = search(begin_table, solved_table, orders, max_depth=max_depth, random_orders=orders is None)
     final_node.table.print()
     print("Solution found in " + str(time.time()-time_before) + 's')
 
@@ -17,7 +17,7 @@ def dfs(orders, solved_table, begin_table):
     print(utils.convert_moves(moves))
 
 
-def search(begin_table, solved_table, orders, random_orders=False):
+def search(begin_table, solved_table, orders, max_depth, random_orders=False):
     nodes_to_check = [Node(begin_table)]
     processed_nodes = list()
 
@@ -49,14 +49,12 @@ def search(begin_table, solved_table, orders, random_orders=False):
 
             child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
-            if can_node_be_added(child_node, nodes_to_check, processed_nodes):
+            if can_node_be_added(child_node, nodes_to_check, processed_nodes, max_depth):
                 nodes_to_check.append(child_node)
     raise Exception("SOLUTION NOT FOUND!!")
 
 
-def can_node_be_added(node, nodes_to_check, processed_nodes):
-    max_depth = 300
-
+def can_node_be_added(node, nodes_to_check, processed_nodes, max_depth):
     if node.depth > max_depth:
         return False
 
