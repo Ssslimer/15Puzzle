@@ -10,8 +10,7 @@ from table import Table
 from utils import order_from_char
 
 
-def determine_method():
-    method_argument = sys.argv[1]
+def determine_method(method_argument):
     if method_argument == "-b" or method_argument == "-bfs":
         return 0
     elif method_argument == "-d" or method_argument == "-dfs":
@@ -34,25 +33,48 @@ def determine_if_order_correct(order):
     return "L" in order and "R" in order and "U" in order and "D" in order
 
 
-def call_algorithm(method, order, table):
-    solved_table = [[-1 for row in range(len(table.data))] for column in range(len(table.data[0]))]
-    for row in range(len(table.data)):
-        for column in range(1, len(table.data[row])+1):
-            solved_table[row][column - 1] = row * len(table.data[row]) + column
-    solved_table[-1][-1] = 0
+def build_standard_solved_table(rows, columns):
+    solved_table_data = [[-1 for row in range(rows)] for column in range(columns)]
+
+    for row in range(rows):
+        for column in range(1, columns+1):
+            solved_table_data[row][column - 1] = row * columns + column
+
+    solved_table_data[-1][-1] = 0
+
+    return Table(solved_table_data)
+
+
+def build_order(string):
+    # Convert from single string to array of numbers corresponding to direction
+    if string == "R":
+        return None
+
+    if not determine_if_order_correct(string):
+        raise Exception("Wrong order, please try again")
+
+    return [order_from_char(string[0]), order_from_char(string[1]), order_from_char(string[2]), order_from_char(string[3])]
+
+
+def build_heuristics(string):
+    return int(string)
+
+
+def call_algorithm(method, settings, table):
+    solved_table = build_standard_solved_table(table.rows, table.columns)
 
     if method == 0:
-        bfs(order, Table(solved_table), table)
+        bfs(build_order(settings[0]), solved_table, table)
     elif method == 1:
-        dfs(order, Table(solved_table), table)
+        dfs(build_order(settings[0]), solved_table, table)
     elif method == 2:
-        idfs(order, table)
+        idfs(build_order(settings[0]), table)
     elif method == 3:
-        best_first_search(Table(solved_table), table, heuristics=2)
+        best_first_search(solved_table, table, heuristics=build_heuristics(settings[0]))
     elif method == 4:
-        a_star(Table(solved_table), table, heuristics=2)
+        a_star(solved_table, table, heuristics=build_heuristics(settings[0]))
     elif method == 5:
-        sma_star(order, table)
+        sma_star(table, order=None)
 
 
 def process_size_input():
@@ -101,28 +123,16 @@ def process_table_input(rows, columns):
     return input_table
 
 
-def main(argv):
-    method = determine_method()
-    order = sys.argv[2]
+def main(args):
+    method = determine_method(args[0])
 
     if method == -1:
         raise Exception("No algorithm was chosen, please try again")
 
-    if order == "R":
-        order = None
-    else:
-        if not determine_if_order_correct(order):
-            raise Exception("Wrong order, please try again")
-        else:
-            order = [order_from_char(order[0]), order_from_char(order[1]), order_from_char(order[2]), order_from_char(order[3])]
-
-    print("Hello there! This is puzzle solver")
     rows, columns = process_size_input()
-    table = Table(process_table_input(rows, columns))
-
-    # Convert from single string to array of numbers corresponding to direction
-
-    call_algorithm(method, order, table)
+    call_algorithm(method,
+                   settings=args[1:],
+                   table=Table(process_table_input(rows, columns)))
 
 
 main(sys.argv[1:])

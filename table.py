@@ -4,6 +4,8 @@ from utils import ORDER_UP, ORDER_DOWN, ORDER_RIGHT, ORDER_LEFT
 class Table(object):
     def __init__(self, data):
         self.data = tuple(tuple(item) for item in data)
+        self.columns = len(data)
+        self.rows = len(data[0])
 
         self.blank_row, self.blank_column = self.find_blank_tile_pos()
         self.hash_value = hash(self.data)
