@@ -56,25 +56,21 @@ def build_order(string):
     return [order_from_char(string[0]), order_from_char(string[1]), order_from_char(string[2]), order_from_char(string[3])]
 
 
-def build_heuristics(string):
-    return int(string)
-
-
 def call_algorithm(method, settings, table):
     solved_table = build_standard_solved_table(table.rows, table.columns)
 
     if method == 0:
         bfs(build_order(settings[0]), solved_table, table)
     elif method == 1:
-        dfs(build_order(settings[0]), solved_table, table)
+        dfs(build_order(settings[0]), solved_table, table, max_depth=int(settings[1]))
     elif method == 2:
         idfs(build_order(settings[0]), table)
     elif method == 3:
-        best_first_search(solved_table, table, heuristics=build_heuristics(settings[0]))
+        best_first_search(solved_table, table, heuristics=int(settings[0]))
     elif method == 4:
-        a_star(solved_table, table, heuristics=build_heuristics(settings[0]))
+        a_star(solved_table, table, heuristics=int(settings[0]))
     elif method == 5:
-        sma_star(table, order=None)
+        sma_star(table, heuristics=int(settings[0]))
 
 
 def process_size_input():
