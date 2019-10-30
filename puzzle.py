@@ -65,7 +65,7 @@ def call_algorithm(method, settings, table):
     elif method == 1:
         dfs(build_order(settings[0]), solved_table, table, max_depth=int(settings[1]))
     elif method == 2:
-        idfs(build_order(settings[0]), table)
+        idfs(build_order(settings[0]),solved_table, table, min_limit=int(settings[1]), max_depth=int(settings[2]))
     elif method == 3:
         best_first_search(solved_table, table, heuristics=int(settings[0]))
     elif method == 4:
