@@ -1,5 +1,6 @@
 import sys
 
+import utils
 from bfs import bfs
 from dfs import dfs
 from idfs import idfs
@@ -73,62 +74,19 @@ def call_algorithm(method, settings, table):
         sma_star(table, heuristics=int(settings[0]))
 
 
-def process_size_input():
-    print("Pass two integers denoting size of the puzzle table")
-    line = input().split()
-    if len(line) != 2:
-        raise Exception("ERROR, expected only 2 integers")
-
-    rows = int(line[0])
-    columns = int(line[1])
-    if rows <= 1 or columns <= 1:
-        raise Exception("ERROR, give only positive size for table and at least 2")
-
-    return rows, columns
-
-
-def process_table_input(rows, columns):
-    print("Pass the input")
-
-    input_table = [[0 for x in range(rows)] for y in range(columns)]
-
-    for row in range(rows):
-        raw_line = input()
-        elements = raw_line.split()
-        max_value = rows * columns - 1
-
-        if len(elements) != columns:
-            raise Exception("ERROR, columns and input doesnt match")
-        for i in range(len(elements)):
-            value = int(elements[i])
-            if value > max_value:
-                raise Exception("ERROR, value out of possible range: <0:" + str(max_value)+">")
-            input_table[row][i] = value
-
-    # Used to check if the numbers are fine
-    validation_list = [False] * (rows * columns)
-
-    for row in range(rows):
-        for column in range(columns):
-            validation_list[input_table[row][column]] = True
-
-    for b in validation_list:
-        if not b:
-            raise Exception("ERROR, INCORRECT NUMBERS", validation_list)
-
-    return input_table
-
-
 def main(args):
     method = determine_method(args[0])
 
     if method == -1:
         raise Exception("No algorithm was chosen, please try again")
 
-    rows, columns = process_size_input()
+    rows, columns = utils.process_size_input()
+    data = utils.process_table_input(rows, columns)
     call_algorithm(method,
                    settings=args[1:],
-                   table=Table(process_table_input(rows, columns)))
+                   table=Table(data))
 
 
-main(sys.argv[1:])
+if __name__ == '__main__':
+    main(sys.argv[1:])
+

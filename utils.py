@@ -18,10 +18,12 @@ def order_from_char(char):
 
 
 def convert_moves(moves_as_ints):
-    moves = list()
+    moves = ""
     arr = ["L", "R", "D", "U"]
-    for move in moves_as_ints:
-        moves.append(arr[move])
+    for i in range(len(moves_as_ints)):
+        moves += arr[moves_as_ints[i]]
+        if i < len(moves_as_ints) - 1:
+            moves += ","
     return moves
 
 
@@ -79,3 +81,48 @@ def add_to_ascending_list(arr, value):
         arr.insert(left_pointer, value)
     else:
         arr.insert(right_pointer, value)
+
+def process_size_input():
+    print("Pass two integers denoting size of the puzzle table")
+    line = input().split()
+    if len(line) != 2:
+        raise Exception("ERROR, expected only 2 integers")
+
+    rows = int(line[0])
+    columns = int(line[1])
+    if rows <= 1 or columns <= 1:
+        raise Exception("ERROR, give only positive size for table and at least 2")
+
+    return rows, columns
+
+
+def process_table_input(rows, columns):
+    print("Pass the input")
+
+    input_table = [[0 for x in range(rows)] for y in range(columns)]
+
+    for row in range(rows):
+        raw_line = input()
+        elements = raw_line.split()
+        max_value = rows * columns - 1
+
+        if len(elements) != columns:
+            raise Exception("ERROR, columns and input doesnt match")
+        for i in range(len(elements)):
+            value = int(elements[i])
+            if value > max_value:
+                raise Exception("ERROR, value out of possible range: <0:" + str(max_value)+">")
+            input_table[row][i] = value
+
+    # Used to check if the numbers are fine
+    validation_list = [False] * (rows * columns)
+
+    for row in range(rows):
+        for column in range(columns):
+            validation_list[input_table[row][column]] = True
+
+    for b in validation_list:
+        if not b:
+            raise Exception("ERROR, INCORRECT NUMBERS", validation_list)
+
+    return input_table

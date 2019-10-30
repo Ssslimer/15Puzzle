@@ -3,10 +3,11 @@ import utils
 import time
 
 
-def best_first_search(solved_table, begin_table, heuristics):
+def best_first_search(solved_table, begin_table, heuristics, max_depth=100):
     time_before = time.time()
 
-    final_node = search(solved_table, begin_table, heuristics)
+    heuristics=1
+    final_node = search(solved_table, begin_table, heuristics, max_depth)
     final_node.table.print()
     print("Solution found in " + str(time.time()-time_before) + 's')
 
@@ -15,7 +16,7 @@ def best_first_search(solved_table, begin_table, heuristics):
     print(utils.convert_moves(moves))
 
 
-def search(solved_table, begin_table, heuristics):
+def search(solved_table, begin_table, heuristics, max_depth):
     nodes_to_check = [[Node(begin_table), 0]]
     processed_nodes = list()
 
@@ -39,7 +40,7 @@ def search(solved_table, begin_table, heuristics):
 
             value = evaluate(solved_table, child_node, heuristics)
 
-            if can_node_be_added(child_node, nodes_to_check, processed_nodes):
+            if can_node_be_added(child_node, nodes_to_check, processed_nodes, max_depth):
                 add_to_descending_list(child_node, value, nodes_to_check)
     raise Exception("Could not find solution")
 
@@ -52,7 +53,10 @@ def add_to_descending_list(node, value, descending_list):
     descending_list.append([node, value])
 
 
-def can_node_be_added(node, nodes_to_check, processed_nodes):
+def can_node_be_added(node, nodes_to_check, processed_nodes, max_depth):
+    if node.depth > max_depth:
+        return False
+
     if utils.binary_search(processed_nodes, node.table.hash_value) != -1:
         return False
 
