@@ -17,6 +17,17 @@ def order_from_char(char):
         return ORDER_DOWN
 
 
+def reverse_move(move):
+    if move == ORDER_LEFT:
+        return ORDER_RIGHT
+    elif move == ORDER_RIGHT:
+        return ORDER_LEFT
+    elif move == ORDER_DOWN:
+        return ORDER_UP
+    elif move == ORDER_UP:
+        return ORDER_DOWN
+
+
 def convert_moves(moves_as_ints):
     moves = ""
     arr = ["L", "R", "D", "U"]
@@ -81,6 +92,7 @@ def add_to_ascending_list(arr, value):
         arr.insert(left_pointer, value)
     else:
         arr.insert(right_pointer, value)
+
 
 def process_size_input():
     print("Pass two integers denoting size of the puzzle table")
