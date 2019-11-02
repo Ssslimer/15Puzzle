@@ -51,17 +51,35 @@ def create_list_of_moves(final_node):
     return moves
 
 
-def binary_search(arr, value):
+# Returns index of the element or -1 if not found. The list is ASCENDING
+def binary_search_asc(arr, value):
     n = len(arr)
-    L = 0
-    R = n - 1
+    left = 0
+    right = n - 1
 
-    while L <= R:
-        mid = floor((L + R) / 2)
+    while left <= right:
+        mid = floor((left + right) / 2)
         if arr[mid] < value:
-            L = mid + 1
+            left = mid + 1
         elif arr[mid] > value:
-            R = mid - 1
+            right = mid - 1
+        else:
+            return mid
+    return -1
+
+
+# Returns index of the element or -1 if not found. The list is DESCENDING
+def binary_search_desc(arr, value):
+    n = len(arr)
+    left = 0
+    right = n - 1
+
+    while left <= right:
+        mid = floor((left + right) / 2)
+        if arr[mid] < value:
+            right = mid - 1
+        elif arr[mid] > value:
+            left = mid + 1
         else:
             return mid
     return -1

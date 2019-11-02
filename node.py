@@ -19,6 +19,3 @@ class Node(object):
             if current_node.parent is None:
                 return False
             current_node = current_node.parent
-
-    def __hash__(self):
-        return self.table.hash_value

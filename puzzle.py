@@ -1,14 +1,22 @@
 import sys
+import time
 
+import a_star
+import best_first_search
+import bfs
+import dfs
+import idfs
+import sma_star
 import utils
-from bfs import bfs
-from dfs import dfs
-from idfs import idfs
-from best_first_search import best_first_search
-from a_star import a_star
-from sma_star import sma_star
 from table import Table
 from utils import order_from_char
+
+BFS = 0
+DFS = 1
+IDFS = 2
+BEST_FIRST_SEARCH = 3
+A_STAR = 4
+SMA_STAR = 5
 
 
 def determine_method(method_argument):
@@ -60,18 +68,34 @@ def build_order(string):
 def call_algorithm(method, settings, table):
     solved_table = build_standard_solved_table(table.rows, table.columns)
 
-    if method == 0:
-        bfs(build_order(settings[0]), solved_table, table)
-    elif method == 1:
-        dfs(build_order(settings[0]), solved_table, table, max_depth=int(settings[1]))
-    elif method == 2:
-        idfs(build_order(settings[0]), solved_table, table, min_limit=int(settings[1]), max_depth=int(settings[2]))
-    elif method == 3:
-        best_first_search(solved_table, table, heuristics=int(settings[0]), max_depth=int(settings[1]))
-    elif method == 4:
-        a_star(solved_table, table, heuristics=int(settings[0]), max_depth=int(settings[1]))
-    elif method == 5:
-        sma_star(table, heuristics=int(settings[0]))
+    time_before = time.time()
+
+    if method == BFS:
+        order = build_order(settings[0])
+        final_node = bfs.search(begin_table=table, solved_table=solved_table, order=order, max_depth=int(settings[1]), random_orders=order is None)
+    elif method == DFS:
+        order = build_order(settings[0])
+        final_node = dfs.search(begin_table=table, solved_table=solved_table, order=order, max_depth=int(settings[1]), random_orders=order is None)
+    elif method == IDFS:
+        order = build_order(settings[0])
+        final_node = idfs.search(begin_table=table, solved_table=solved_table, order=order, min_limit=int(settings[1]), max_depth=int(settings[2]))
+    elif method == BEST_FIRST_SEARCH:
+        final_node = best_first_search.search(begin_table=table, solved_table=solved_table, heuristic=int(settings[0]), max_depth=int(settings[1]))
+    elif method == A_STAR:
+        final_node = a_star.search(begin_table=table, solved_table=solved_table, heuristic=int(settings[0]), max_depth=int(settings[1]))
+    elif method == SMA_STAR:
+        final_node = sma_star.search()
+
+    if final_node is None:
+        print("Could not find a solution!")
+        return
+
+    final_node.table.print()
+    print("Solution found in " + str(time.time()-time_before) + 's')
+
+    moves = utils.create_list_of_moves(final_node)
+    print("Moves to solve the puzzle: " + str(len(moves)))
+    print(utils.convert_moves(moves))
 
 
 def main(args):

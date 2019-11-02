@@ -1,2 +1,2 @@
-def sma_star(order, table):
-    print("Inside SMA* algorithm")
+def search():
+    print("Inside SMA* algorithm. Remove this line!")
