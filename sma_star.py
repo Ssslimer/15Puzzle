@@ -211,7 +211,7 @@ def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
 
         while hash_array_index < len(hash_array):
             # check if this is correct way of accessing hash array!!!!!!!!!!!!!!!!!!!
-            if hash_array[hash_array_index].table.hash_value == value_of_node:
+            if hash_array[hash_array_index] == value_of_node:
                 del hash_array[hash_array_index]
             hash_array_index += 1
 
