@@ -167,7 +167,7 @@ def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
         return
 
     while index < len(deleted_array):
-        value_of_node = deleted_array[index].table.hash_value
+        value_of_node = deleted_array[index][0].table.hash_value
 
         hash_array_index = 0
 
