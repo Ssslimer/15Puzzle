@@ -84,7 +84,7 @@ def call_algorithm(method, settings, table):
     elif method == A_STAR:
         final_node = a_star.search(begin_table=table, solved_table=solved_table, heuristic=int(settings[0]), max_depth=int(settings[1]))
     elif method == SMA_STAR:
-        final_node = sma_star.search()
+        final_node = sma_star.search(begin_table=table, solved_table=solved_table, heuristic=int(settings[0]), max_depth=int(settings[1]), max_memory=int(settings[2]))
 
     if final_node is None:
         print("Could not find a solution!")

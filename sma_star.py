@@ -57,49 +57,6 @@ def search(solved_table, begin_table, heuristic, max_depth, max_memory):
     return None
 
 
-def search_old(solved_table, begin_table, heuristic, max_depth):
-    open_nodes = [[Node(begin_table), 0]]  # Node, f(n)
-    closed_nodes = list()  # Node, f(n)
-
-    counter = 0
-    while len(open_nodes) != 0:
-        counter += 1
-        if counter % 1000 == 0:
-            print("Open nodes: "+str(len(open_nodes))+" Closed nodes: "+str(len(closed_nodes))+" "+str(counter)+" "+str(open_nodes[-1][0].depth))
-
-        current_node, current_f = open_nodes.pop()
-
-        if current_node.table.is_solved(solved_table):
-            return current_node
-
-        if current_node.depth > max_depth:
-            continue
-
-        for direction in range(4):
-            if not current_node.table.can_move(direction):
-                continue
-
-            child_node = Node(current_node.table.move_blank(direction), current_node, direction)
-            g = child_node.depth
-            f = heuristics.calculate(solved_table, child_node, heuristic) + g
-
-            same_table_open_node = find_same_table_node(open_nodes, child_node.table)
-            same_table_closed_node = find_same_table_node(closed_nodes, child_node.table)
-
-            if same_table_open_node is None and same_table_closed_node is None:
-                # The node is reached for the 1st time, so we can easily add it
-                add_to_descending_list_old(child_node, f, open_nodes)
-            elif same_table_open_node is not None and g < same_table_open_node[0].depth:
-                # We found better route to the Node
-                remove_from_descending_list(same_table_open_node[1], open_nodes)
-                add_to_descending_list_old(child_node, f, open_nodes)
-            elif same_table_closed_node is not None:
-                continue
-
-        add_to_descending_list_old(current_node, current_f, closed_nodes)
-    return None
-
-
 def find_same_table_node(nodes, table):
     for n in nodes:
         if n[0].table.hash_value == table.hash_value:
@@ -203,6 +160,9 @@ def add_to_descending_list(node, value, arr, max_memory):
 
 def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
     index = 0
+
+    if deleted_array is None:
+        return
 
     while index < len(deleted_array):
         value_of_node = deleted_array[index].table.hash_value
