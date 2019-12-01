@@ -51,6 +51,8 @@ def search(solved_table, begin_table, heuristic, max_depth, max_memory):
                 same_table_open_node[0] = child_node  # We have to replace Node assigned to given hash code, as it might have different e.g. depth
                 add_to_descending_list(child_node, f, open_nodes, max_memory)
 
+                # no adding to hash table here, so no removing hash values, right?
+
             elif same_table_closed_node != -1:
                 continue
         utils.add_to_ascending_list(closed_nodes, current_node.table.hash_value)
@@ -197,7 +199,7 @@ def remove_worst_elements(arr, is_ascending, max_memory):
     else:
         index = len(arr) - 1
 
-        while len(arr) > max_memory and index < len(arr):
+        while len(arr) > max_memory and index >= 0:
             deleted_array.append(arr[index])
             del arr[index]
             index -= 1
