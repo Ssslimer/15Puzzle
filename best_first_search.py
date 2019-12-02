@@ -21,14 +21,14 @@ def search(solved_table, begin_table, heuristic, max_depth):
         utils.remove_from_descending_list(nodes_to_check_hash, current_node.table.hash_value)
         utils.add_to_ascending_list(processed_nodes, current_node.table.hash_value)
 
-        if current_node.table.is_solved(solved_table):
-            return current_node
-
         for direction in range(4):
             if not current_node.table.can_move(direction):
                 continue
 
             child_node = Node(current_node.table.move_blank(direction), current_node, direction)
+            if child_node.table.is_solved(solved_table):
+                return child_node
+
             value = heuristics.calculate(solved_table, child_node, heuristic)
 
             if can_node_be_added(child_node, nodes_to_check_hash, processed_nodes, max_depth):

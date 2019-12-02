@@ -1,6 +1,7 @@
 HAMMING_DISTANCE = 0
 MANHATTAN_DISTANCE = 1
 WEIGHTED_HAMMING = 2
+NO_HEURISTIC = 3
 
 
 def calculate(solved_table, node, heuristics=0):
@@ -10,6 +11,8 @@ def calculate(solved_table, node, heuristics=0):
         return __manhattan_heuristic(solved_table, node)
     elif heuristics == WEIGHTED_HAMMING:
         return __weighted_hamming_heuristic(solved_table, node)
+    elif heuristics == NO_HEURISTIC:
+        return 0
 
 
 def __hamming_heuristic(solved_table, node):

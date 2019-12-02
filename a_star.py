@@ -6,9 +6,9 @@ from node import Node
 
 
 def search(solved_table, begin_table, heuristic, max_depth):
-    open_nodes = [[Node(begin_table), 0]]  # Node, f(n) GIT
+    open_nodes = [[Node(begin_table), 0]]  # Node, f(n)
     open_nodes_hash = [[open_nodes[0][0], open_nodes[0][0].table.hash_value]]  # [Node, Node.table.hashcode]
-    closed_nodes = list()  # hashcodes GIT
+    closed_nodes = list()  # hashcodes
 
     counter = 0
     while len(open_nodes) != 0:
@@ -32,7 +32,7 @@ def search(solved_table, begin_table, heuristic, max_depth):
             child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
             g = child_node.depth
-            f = heuristics.calculate(solved_table, child_node, heuristic) + g
+            f = 1000 * heuristics.calculate(solved_table, child_node, heuristic) + g
 
             same_table_open_node = binary_search_asc(open_nodes_hash, child_node.table.hash_value)  # Index in hashcode list or None
             same_table_closed_node = utils.binary_search_asc(closed_nodes, child_node.table.hash_value)
@@ -44,7 +44,7 @@ def search(solved_table, begin_table, heuristic, max_depth):
 
             elif same_table_open_node is not None and g < same_table_open_node[0].depth:
                 # We found better route to the Node
-                remove_from_descending_list(child_node.table.hash_value, open_nodes)  # NOT GUT, optimize
+                remove_from_descending_list(child_node.table.hash_value, open_nodes)
                 same_table_open_node[0] = child_node  # We have to replace Node assigned to given hash code, as it might have different e.g. depth
                 add_to_descending_list(child_node, f, open_nodes)
 

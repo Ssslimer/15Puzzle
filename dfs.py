@@ -21,20 +21,18 @@ def search(begin_table, solved_table, order, max_depth, random_orders=False):
         current_node = nodes_to_check.pop()
         utils.add_to_ascending_list(processed_nodes, current_node.table.hash_value)
 
-        if current_node.table.is_solved(solved_table):
-            return current_node
-
         if random_orders:
             shuffle(order)
 
         # Add child nodes to search stack, we want the child with 'first' order on top of the stack, so children
         # should be added in reversed order as top of the "list-stack" is its end
-        for i in range(len(order) - 1, -1, -1):
-            direction = order[i]
+        for direction in reversed(order):
             if not current_node.table.can_move(direction):
                 continue
 
             child_node = Node(current_node.table.move_blank(direction), current_node, direction)
+            if child_node.table.is_solved(solved_table):
+                return child_node
 
             if can_node_be_added(child_node, nodes_to_check, processed_nodes, max_depth):
                 nodes_to_check.append(child_node)
