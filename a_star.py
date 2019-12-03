@@ -32,7 +32,7 @@ def search(solved_table, begin_table, heuristic, max_depth):
             child_node = Node(current_node.table.move_blank(direction), current_node, direction)
 
             g = child_node.depth
-            f = 1000 * heuristics.calculate(solved_table, child_node, heuristic) + g
+            f = heuristics.calculate(solved_table, child_node, heuristic) + g
 
             same_table_open_node = binary_search_asc(open_nodes_hash, child_node.table.hash_value)  # Index in hashcode list or None
             same_table_closed_node = utils.binary_search_asc(closed_nodes, child_node.table.hash_value)

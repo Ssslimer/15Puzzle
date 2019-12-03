@@ -6,13 +6,14 @@ from node import Node
 
 
 def search(solved_table, begin_table, heuristic, max_depth, max_memory):
-    open_nodes = [[Node(begin_table), 0]]  # Node, f(n) GIT
+    open_nodes = [[Node(begin_table), 0]]  # Node, f(n)
     open_nodes_hash = [[open_nodes[0][0], open_nodes[0][0].table.hash_value]]  # [Node, Node.table.hashcode]
-    closed_nodes = list()  # hashcodes GIT
+    closed_nodes = list()  # hashcodes
 
     counter = 0
     while len(open_nodes) != 0:
         counter += 1
+
         if counter % 1000 == 0:
             print("Open nodes: "+str(len(open_nodes))+" Closed nodes: "+str(len(closed_nodes))+" "+str(counter)+" "+str(open_nodes[-1][0].depth))
 
@@ -38,20 +39,25 @@ def search(solved_table, begin_table, heuristic, max_depth, max_memory):
             same_table_closed_node = utils.binary_search_asc(closed_nodes, child_node.table.hash_value)
 
             if same_table_open_node is None and same_table_closed_node == -1:
-                # The node is reached for the 1st time, so we can easily add it
-                removed_elements_array = add_to_descending_list(child_node, f, open_nodes, max_memory)
-                add_to_ascending_list(child_node, child_node.table.hash_value, open_nodes_hash, max_memory)
+                if len(open_nodes) < max_memory: # Normal behaviour
+                    # The node is reached for the 1st time, so we can easily add it
+                    add_to_descending_list(child_node, f, open_nodes)
+                    add_to_ascending_list(child_node, child_node.table.hash_value, open_nodes_hash)
+                else: # If max memory reached
+                    if f > open_nodes[-1][1]:
+                        # Delete the worst one
+                        remove_from_ascending_list(open_nodes_hash, open_nodes[-1][0].table.hash_value)
+                        del open_nodes[-1]
 
-                # Check correctness!!!!!!!!!!!!!!!!!!!!!!!!!!1
-                remove_hash_values_from_deleted_nodes(open_nodes_hash, removed_elements_array)
+                        # Add new node
+                        add_to_descending_list(child_node, f, open_nodes)
+                        add_to_ascending_list(child_node, child_node.table.hash_value, open_nodes_hash)
 
             elif same_table_open_node is not None and g < same_table_open_node[0].depth:
                 # We found better route to the Node
-                remove_from_descending_list(child_node.table.hash_value, open_nodes)  # NOT GUT, optimize
+                remove_from_descending_list(child_node.table.hash_value, open_nodes)
                 same_table_open_node[0] = child_node  # We have to replace Node assigned to given hash code, as it might have different e.g. depth
-                add_to_descending_list(child_node, f, open_nodes, max_memory)
-
-                # no adding to hash table here, so no removing hash values, right?
+                add_to_descending_list(child_node, f, open_nodes)
 
             elif same_table_closed_node != -1:
                 continue
@@ -83,7 +89,7 @@ def binary_search_asc(arr, value):
     return None
 
 
-def add_to_ascending_list(node, value, arr, max_memory):
+def add_to_ascending_list(node, value, arr):
     if len(arr) == 0 or value >= arr[-1][1]:
         arr.append([node, value])
         return
@@ -130,14 +136,14 @@ def remove_from_ascending_list(arr, value):
     raise Exception("Value not on the list! Could not remove it!")
 
 
-def add_to_descending_list(node, value, arr, max_memory):
+def add_to_descending_list(node, value, arr):
     if len(arr) == 0 or value <= arr[-1][1]:
         arr.append([node, value])
-        return None
+        return
 
     if value >= arr[0][1]:
         arr.insert(0, [node, value])
-        return None
+        return
 
     left = 0
     right = len(arr) - 1
@@ -150,14 +156,44 @@ def add_to_descending_list(node, value, arr, max_memory):
             left = mid + 1
         else:
             arr.insert(mid, [node, value])
-            return remove_worst_elements(arr, False, max_memory)
+            return
 
     if left > right:
         arr.insert(left, [node, value])
-        return remove_worst_elements(arr, False, max_memory)
+        return
     else:
         arr.insert(right, [node, value])
-        return remove_worst_elements(arr, False, max_memory)
+        return
+
+
+# def add_to_descending_list(node, value, arr, max_memory):
+#     if len(arr) == 0 or value <= arr[-1][1]:
+#         arr.append([node, value])
+#         return None
+#
+#     if value >= arr[0][1]:
+#         arr.insert(0, [node, value])
+#         return None
+#
+#     left = 0
+#     right = len(arr) - 1
+#
+#     while left <= right:
+#         mid = floor((left + right) / 2)
+#         if arr[mid][1] < value:
+#             right = mid - 1
+#         elif arr[mid][1] > value:
+#             left = mid + 1
+#         else:
+#             arr.insert(mid, [node, value])
+#             return remove_worst_elements(arr, False, max_memory)
+#
+#     if left > right:
+#         arr.insert(left, [node, value])
+#         return remove_worst_elements(arr, False, max_memory)
+#     else:
+#         arr.insert(right, [node, value])
+#         return remove_worst_elements(arr, False, max_memory)
 
 
 def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
