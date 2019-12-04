@@ -44,10 +44,10 @@ def search(solved_table, begin_table, heuristic, max_depth, max_memory):
                     add_to_descending_list(child_node, f, open_nodes)
                     add_to_ascending_list(child_node, child_node.table.hash_value, open_nodes_hash)
                 else: # If max memory reached
-                    if f > open_nodes[-1][1]:
+                    if f < open_nodes[0][1]:
                         # Delete the worst one
-                        remove_from_ascending_list(open_nodes_hash, open_nodes[-1][0].table.hash_value)
-                        del open_nodes[-1]
+                        remove_from_ascending_list(open_nodes_hash, open_nodes[0][0].table.hash_value)
+                        del open_nodes[0]
 
                         # Add new node
                         add_to_descending_list(child_node, f, open_nodes)
