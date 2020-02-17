@@ -144,8 +144,3 @@ if __name__ == '__main__':
     app = Viewer()
     app.mainloop()
 
-
-
-# R,D,L,D,R,R,U,L,L,D,R,R,U,L,L,D,R,U,U,R,D,L,U,L,D,R,R,D,L,U,U,R,D,D,L,U,R,U,L,D,L,D,R,R,U,L,D,L,U,R,R,D,L,U,L,D,R,R
-
-

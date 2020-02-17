@@ -166,36 +166,6 @@ def add_to_descending_list(node, value, arr):
         return
 
 
-# def add_to_descending_list(node, value, arr, max_memory):
-#     if len(arr) == 0 or value <= arr[-1][1]:
-#         arr.append([node, value])
-#         return None
-#
-#     if value >= arr[0][1]:
-#         arr.insert(0, [node, value])
-#         return None
-#
-#     left = 0
-#     right = len(arr) - 1
-#
-#     while left <= right:
-#         mid = floor((left + right) / 2)
-#         if arr[mid][1] < value:
-#             right = mid - 1
-#         elif arr[mid][1] > value:
-#             left = mid + 1
-#         else:
-#             arr.insert(mid, [node, value])
-#             return remove_worst_elements(arr, False, max_memory)
-#
-#     if left > right:
-#         arr.insert(left, [node, value])
-#         return remove_worst_elements(arr, False, max_memory)
-#     else:
-#         arr.insert(right, [node, value])
-#         return remove_worst_elements(arr, False, max_memory)
-
-
 def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
     index = 0
 
@@ -208,7 +178,6 @@ def remove_hash_values_from_deleted_nodes(hash_array, deleted_array):
         hash_array_index = 0
 
         while hash_array_index < len(hash_array):
-            # check if this is correct way of accessing hash array!!!!!!!!!!!!!!!!!!!
             if hash_array[hash_array_index] == value_of_node:
                 del hash_array[hash_array_index]
             hash_array_index += 1

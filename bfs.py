@@ -4,7 +4,7 @@ import table
 import utils
 
 
-def search(begin_table, solved_table, max_depth=10, order=None, random_orders=False):
+def search(begin_table, solved_table, max_depth, order=None, random_orders=False):
     nodes_to_check = [Node(begin_table)]
     processed_nodes = list()
 

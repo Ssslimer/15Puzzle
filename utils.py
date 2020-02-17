@@ -132,20 +132,6 @@ def add_to_ascending_list(arr, value):
         return
 
 
-def process_size_input():
-    print("Pass two integers denoting size of the puzzle table")
-    line = input().split()
-    if len(line) != 2:
-        raise Exception("ERROR, expected only 2 integers")
-
-    rows = int(line[0])
-    columns = int(line[1])
-    if rows <= 1 or columns <= 1:
-        raise Exception("ERROR, give only positive size for table and at least 2")
-
-    return rows, columns
-
-
 def process_table_input(rows, columns):
     print("Pass the input")
 

@@ -37,34 +37,6 @@ def search(solved_table, begin_table, heuristic, max_depth):
     return None
 
 
-def search_old(solved_table, begin_table, heuristic, max_depth):
-    nodes_to_check = [[Node(begin_table), 0]]
-    processed_nodes = list()
-
-    counter = 0
-    while len(nodes_to_check) != 0:
-        counter += 1
-        if counter % 1000 == 0:
-            print(str(len(nodes_to_check))+" "+str(counter))
-
-        current_node = nodes_to_check.pop()[0]
-        utils.add_to_ascending_list(processed_nodes, current_node.table.hash_value)
-
-        if current_node.table.is_solved(solved_table):
-            return current_node
-
-        for direction in range(4):
-            if not current_node.table.can_move(direction):
-                continue
-
-            child_node = Node(current_node.table.move_blank(direction), current_node, direction)
-            value = heuristics.calculate(solved_table, child_node, heuristic)
-
-            if can_node_be_added_old(child_node, nodes_to_check, processed_nodes, max_depth):
-                add_to_descending_list_old(child_node, value, nodes_to_check)
-    return None
-
-
 def add_to_descending_list(node, value, arr):
     if len(arr) == 0 or value <= arr[-1][1]:
         arr.append([node, value])
